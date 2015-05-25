@@ -22,10 +22,10 @@
 ## Author: MINT <MINT@MINT-PC>
 ## Created: 2015-05-21
 ##schar(:,1) = rmse(polyval(schar(i,:),vals),realvals) 
-function [newRmse] = Kurvenschar (best,kids,funcvals,realvals,generations,keep)
+function [newRmse] = ESkeep (best,kids,funcvals,realvals,generations,keep)
 
 ord = size(best)(:,2)-1
-q = z/2
+
 ##for i = 1:ord
 ##a (:,i) = floor(best(:,i)*10^z)/10^z -1/10^z
 ##b (:,i) = floor(best(:,i)*10^z)/10^z +1/10^z
@@ -48,14 +48,14 @@ end
 
 bestFilter = (schar(:,ord+1)==min(schar(:,ord+1)))
 
- 
+ newBest = (schar(bestFilter,1:ord+1)
 
 
 
-if (generations != 1) Kurvenschar (newBest,kids,funcvals,realvals,z,generations-1)
+if (generations != 1) Kurvenschar (newBest,kids,funcvals,realvals,,generations-1)
 
-else  ((schar(bestFilter,ord+1))>(best(:,ord+1))) newBest = (best(:,ord+1))
+elseif ((schar(bestFilter,ord+1))>(best(:,ord+1))) newBest = (best(:,ord+1))
 
-##else newBest = 1 ##(schar(bestFilter,1:ord+1))
+else newBest = (schar(bestFilter,1:ord+1))
 endif
 endfunction
