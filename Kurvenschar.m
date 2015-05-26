@@ -22,37 +22,45 @@
 ## Author: MINT <MINT@MINT-PC>
 ## Created: 2015-05-21
 ##schar(:,1) = rmse(polyval(schar(i,:),vals),realvals) 
-function [newRmse] = Kurvenschar (best,kids,funcvals,realvals,z,generations)
+function [newRmse] = Kurvenschar (best,kids,rate,funcvals,realvals,generations)
+
+max_recursion_depth (1000, "local")
+
 
 ord = size(best)(:,2)
-q = z/2
+
 ##for i = 1:ord
 ##a (:,i) = floor(best(:,i)*10^z)/10^z -1/10^z
 ##b (:,i) = floor(best(:,i)*10^z)/10^z +1/10^z
 ##end
+
+##Intervall der Erzeugung der Kinder
 for i = 1:ord
-a (:,i) = (best(:,i))-1/generations
-b (:,i) = (best(:,i))+1/generations
+a (:,i) = (best(:,i))-rate
+b (:,i) = (best(:,i))+rate
 end
 
-
+##Erzeugung der Kinder
 for i = 1:ord
-
 schar(:,i) = rand(1,kids)'.*(b(:,i)-a(:,i)).+a(:,i)         
 end
 
 
+##Auswertung der Kinder
 for i = 1:kids
 schar(i,ord+1) = rmse(polyval(schar(i,:),funcvals),realvals)
 end
 
-bestFilter = (schar(:,ord+1)==min(schar(:,ord+1)))
 
+##Auswahl des besten Kindes
+bestFilter = (schar(:,ord+1)==min(schar(:,ord+1)))
 newBest = (schar(bestFilter,1:ord))
 newRmse = (schar(bestFilter,ord+1))
 
-if (generations != 1) Kurvenschar (newBest,kids,funcvals,realvals,z,generations-1)
+##Aufruf der nächsten Generation der Kinder
+if (generations != 1) Kurvenschar (newBest,kids,rate,funcvals,realvals,generations-1)
 
-else newBest = (schar(bestFilter,1:ord))
+else newBest = schar(bestFilter,1:ord)
 endif
+
 endfunction
